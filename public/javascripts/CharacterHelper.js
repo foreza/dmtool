@@ -53,13 +53,13 @@ const CharacterHelper = {
         .replace('%%MAX%%', character.MaxHP)
         .replace('%%PERCENTAGE%%', hpPercentage);
 
-    // Generate Mana
-    const manaPercentage = ((character.Mana / character.MaxMana) * 100).toFixed(2);
-    output += characterTemplate.dynamicBar
-        .replace('%%TYPE%%', 'mana')
-        .replace('%%CURRENT%%', character.Mana)
-        .replace('%%MAX%%', character.MaxMana)
-        .replace('%%PERCENTAGE%%', manaPercentage);
+    // // Generate Mana
+    // const manaPercentage = ((character.Mana / character.MaxMana) * 100).toFixed(2);
+    // output += characterTemplate.dynamicBar
+    //     .replace('%%TYPE%%', 'mana')
+    //     .replace('%%CURRENT%%', character.Mana)
+    //     .replace('%%MAX%%', character.MaxMana)
+    //     .replace('%%PERCENTAGE%%', manaPercentage);
 
     // Generate stats
     output += `<div class="char-stats">`;
