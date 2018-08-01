@@ -14,6 +14,7 @@ module.exports = {
   characters: {
     template: [
       { name: 'Name', type: 'string', default: 'John Doe' },
+      { name: 'Picture', type: 'picture' },
       { name: 'Level', type: 'number', default: 1 },
       { name: 'Race', type: 'options', values: ['Aarakocra', 'Aasimar', 'Aetherborn', 'Aven', 'Bugbear', 'Centaur', 'Changeling', 'Dragonborn', 'Dwarf', 'Elf', 'Firbolg', 'Genasi', 'Gith', 'Gnome', 'Goblin', 'Goliath', 'Half-elf', 'Half-orc', 'Halfling', 'Hobgoblin', 'Human', 'Kenku', 'Khenra', 'Kobold', 'Kor', 'Lizardfolk', 'Merfolk', 'M cont.', 'Minotaur', 'Naga', 'Orc', 'Revenant', 'Shifter', 'Siren', 'Tabaxi', 'Tiefling', 'Tortle', 'Triton', 'Vampire', 'Vedalken', 'Warforged', 'Yuan-Ti Pureblood'] },
       { name: 'Alignment', type: 'options', values: ['Chaotic Evil', 'Chaotic Good', 'Chaotic Neutral', 'Lawful Evil', 'Lawful Good', 'Lawful Neutral', 'Neutral', 'Neutral Evil', 'Neutral Good']},
