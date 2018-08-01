@@ -1979,4 +1979,24 @@ body.modal-open {
     overflow: auto;
     display: block; }
 
+#characters-container {
+  margin-left: -10%; }
+
+#map-container {
+  display: block;
+  position: absolute;
+  right: 1%;
+  top: 25%;
+  background-image: url("https://static.giantbomb.com/uploads/square_small/0/25/11297-Azeroth_New_World_Map.jpg");
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  background-color: #cccccc;
+  height: 400px;
+  width: 400px; }
+
+canvas#mapCanvas {
+  width: inherit;
+  height: inherit;
+  border: 2px solid #000000; }
+
 /*# sourceMappingURL=main.css.map */

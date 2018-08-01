@@ -3,14 +3,25 @@
 
     </section>
 
+    <section id="map-container">
+            <canvas id="mapCanvas">
+                Your browser does not support the HTML5 canvas tag.
+                </canvas>
+                <img id="playerSprite" style="visibility:hidden" src="https://cdn.wikimg.net/en/strategywiki/images/1/1d/Male_Supernovice_%28Ragnarok_Online%29.png" alt="Player" width="20" height="20">
+                <img id="monsterSprite" style="visibility:hidden" src="https://vignette.wikia.nocookie.net/ragnarok8812/images/f/fe/RO_SantaPoring%28SD%29.png/revision/latest/scale-to-width-down/160?cb=20170316070121.jpg" alt="Poring" width="20" height="20">
+    </section>
+
     <button id="add-character-btn" class="btn btn-success" title="Add Character">
-        +<i class="ra ra-muscle-up"></i>
+        +
+        <i class="ra ra-muscle-up"></i>
     </button>
     <div class="modal fade" tabindex="-1" role="dialog" id="characterFormModal">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-body">
-                    <div class="form-container"><i class="ra ra-hourglass" id="form-loading-icon"></i></div>
+                    <div class="form-container">
+                        <i class="ra ra-hourglass" id="form-loading-icon"></i>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
@@ -21,146 +32,146 @@
     </div>
 
     <%- include('./characterPictureModal.ejs') %>
+        <script src="/javascripts/MapHelper.js"></script>
+        <script src="/javascripts/CharacterHelper.js"></script>
+        <script>
+            let container;
+            let characters = [];
+            let modalCharacterForm;
+            let modalCharacterFooterButtons;
+            let currentCharacterFormUrl = getCharacterFormUrl(roomKey);
+            const hourglassIcon = `<i class="ra ra-hourglass" id="form-loading-icon"></i>`;
 
-    <script src="/javascripts/CharacterHelper.js"></script>
-    <script>
-        let container;
-        let characters = [];
-        let modalCharacterForm;
-        let modalCharacterFooterButtons;
-        let currentCharacterFormUrl = getCharacterFormUrl(roomKey);
-        const hourglassIcon = `<i class="ra ra-hourglass" id="form-loading-icon"></i>`;
-
-        function uuidv4() {
-            return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
-                (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
-            );
-        }
-
-        function addCharacter(character) {
-            characters.push(character);
-            firestore
-                .collection('rooms')
-                .doc(roomKey)
-                .collection('characters')
-                .add(character)
-            renderCharacters();
-        }
-
-        function renderCharacters() {
-            container.text('');
-            characters.forEach((character) => {
-                container.append(CharacterHelper.generateCharacterHTML(character));
-            });
-        }
-
-        function getCharacterFormUrl(roomKey, characterId) {
-            if (characterId) return `/room/${roomKey}/character/${characterId}/form`;
-
-            return `/room/${roomKey}/characters/template/form`;
-        }
-
-        function uploadPicture() {
-            if (typeof pictureBlob === 'undefined' || !pictureBlob) return Promise.resolve();
-
-            return new Promise((resolve, reject) => {
-                // Get a reference to the storage service, which is used to create references in your storage bucket
-                const storage = firebase.storage().ref();
-                const imagesRef = storage.child(`profileImages/${uuidv4()}.jpg`);
-                const uploadTask = imagesRef.put(pictureBlob);
-                uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED,
-                    (snapshot) => {
-                        // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
-                        var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                        console.log('Upload is ' + progress + '% done');
-                        switch (snapshot.state) {
-                            case firebase.storage.TaskState.PAUSED: // or 'paused'
-                                console.log('Upload is paused');
-                                break;
-                            case firebase.storage.TaskState.RUNNING: // or 'running'
-                                console.log('Upload is running');
-                                break;
-                        }
-                    },
-                    (error) => {
-                        reject(err);
-                    },
-                    () => {
-                        // Upload completed successfully, now we can get the download URL
-                        uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
-                            modalCharacterForm.find(`#characterForm #${pictureFieldId}`).val(downloadURL);
-                            resolve();
-                        });
-                    }
+            function uuidv4() {
+                return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, c =>
+                    (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16)
                 );
-            });
-        }
+            }
 
-        $(() => {
-            modalCharacterForm = $('#characterFormModal');
-            modalCharacterFooterButtons = modalCharacterForm.find('.modal-footer button');
-            container = $('#characters-container');
+            function addCharacter(character) {
+                characters.push(character);
+                firestore
+                    .collection('rooms')
+                    .doc(roomKey)
+                    .collection('characters')
+                    .add(character)
+                renderCharacters();
+            }
 
-            container.on('click', '.edit-btn', (e) => {
-                const characterId = $(e.currentTarget).attr('data-fs-id');
-                currentCharacterFormUrl = getCharacterFormUrl(roomKey, characterId);
-                modalCharacterForm.modal('show');
-            })
+            function renderCharacters() {
+                container.text('');
+                characters.forEach((character) => {
+                    container.append(CharacterHelper.generateCharacterHTML(character));
+                });
+            }
 
-            $('#add-character-btn').on('click', () => {
-                currentCharacterFormUrl = getCharacterFormUrl(roomKey);
-                modalCharacterForm.modal('show');
-            })
+            function getCharacterFormUrl(roomKey, characterId) {
+                if (characterId) return `/room/${roomKey}/character/${characterId}/form`;
 
-            $('#characterFormModal').on('submit', '#characterForm', (e) => {
-                e.preventDefault();
-                uploadPicture()
-                    .then(() => {
-                        const currentTarget = $(e.currentTarget);
-                        const data = currentTarget.serializeJSON();
-                        const characterId = currentTarget.find('#character-id-field').val();
+                return `/room/${roomKey}/characters/template/form`;
+            }
 
-                        const ajaxCall = () => {
-                            return (characterId) ? axios.patch(`/room/${roomKey}/character/${characterId}`, data)
-                                    : axios.post(`/room/${roomKey}/character`, data);
-                        }
+            function uploadPicture() {
+                if (typeof pictureBlob === 'undefined' || !pictureBlob) return Promise.resolve();
 
-                        ajaxCall()
-                            .then(() => {
-                                modalCharacterForm.modal('hide');
-                            })
-                            .catch(err => {
-                                console.error(err);
+                return new Promise((resolve, reject) => {
+                    // Get a reference to the storage service, which is used to create references in your storage bucket
+                    const storage = firebase.storage().ref();
+                    const imagesRef = storage.child(`profileImages/${uuidv4()}.jpg`);
+                    const uploadTask = imagesRef.put(pictureBlob);
+                    uploadTask.on(firebase.storage.TaskEvent.STATE_CHANGED,
+                        (snapshot) => {
+                            // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+                            var progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                            console.log('Upload is ' + progress + '% done');
+                            switch (snapshot.state) {
+                                case firebase.storage.TaskState.PAUSED: // or 'paused'
+                                    console.log('Upload is paused');
+                                    break;
+                                case firebase.storage.TaskState.RUNNING: // or 'running'
+                                    console.log('Upload is running');
+                                    break;
+                            }
+                        },
+                        (error) => {
+                            reject(err);
+                        },
+                        () => {
+                            // Upload completed successfully, now we can get the download URL
+                            uploadTask.snapshot.ref.getDownloadURL().then((downloadURL) => {
+                                modalCharacterForm.find(`#characterForm #${pictureFieldId}`).val(downloadURL);
+                                resolve();
                             });
-                    });
-            });
+                        }
+                    );
+                });
+            }
 
-            firestore.collection('rooms').doc(roomKey).collection('characters')
-                .onSnapshot(function(doc) {
-                    characters = doc.docs.map(character => {
-                        const id = character.id;
-                        return Object.assign({}, character.data(), { id });
-                    });
-                    renderCharacters();
+            $(() => {
+                modalCharacterForm = $('#characterFormModal');
+                modalCharacterFooterButtons = modalCharacterForm.find('.modal-footer button');
+                container = $('#characters-container');
+
+                container.on('click', '.edit-btn', (e) => {
+                    const characterId = $(e.currentTarget).attr('data-fs-id');
+                    currentCharacterFormUrl = getCharacterFormUrl(roomKey, characterId);
+                    modalCharacterForm.modal('show');
+                })
+
+                $('#add-character-btn').on('click', () => {
+                    currentCharacterFormUrl = getCharacterFormUrl(roomKey);
+                    modalCharacterForm.modal('show');
+                })
+
+                $('#characterFormModal').on('submit', '#characterForm', (e) => {
+                    e.preventDefault();
+                    uploadPicture()
+                        .then(() => {
+                            const currentTarget = $(e.currentTarget);
+                            const data = currentTarget.serializeJSON();
+                            const characterId = currentTarget.find('#character-id-field').val();
+
+                            const ajaxCall = () => {
+                                return (characterId) ? axios.patch(`/room/${roomKey}/character/${characterId}`, data)
+                                    : axios.post(`/room/${roomKey}/character`, data);
+                            }
+
+                            ajaxCall()
+                                .then(() => {
+                                    modalCharacterForm.modal('hide');
+                                })
+                                .catch(err => {
+                                    console.error(err);
+                                });
+                        });
                 });
 
-                modalCharacterForm
-                .on('show.bs.modal', (e) => {
-                    modalCharacterFooterButtons.prop('disabled', true);
-                    axios.get(currentCharacterFormUrl)
-                        .then((res) => {
-                            $(e.currentTarget).find('.form-container').html(res.data);
-                            modalCharacterFooterButtons.prop('disabled', false);
-                        })
-                        .catch((err) => {
-                            console.error(err);
+                firestore.collection('rooms').doc(roomKey).collection('characters')
+                    .onSnapshot(function (doc) {
+                        characters = doc.docs.map(character => {
+                            const id = character.id;
+                            return Object.assign({}, character.data(), { id });
                         });
-                })
-                .on('hidden.bs.modal', (e) => {
-                    modalCharacterFooterButtons.prop('disabled', true);
-                    $(e.currentTarget).find('.form-container').html(hourglassIcon);
-                })
-        })
+                        renderCharacters();
+                    });
 
-    </script>
-    <% include ../footer %>
+                modalCharacterForm
+                    .on('show.bs.modal', (e) => {
+                        modalCharacterFooterButtons.prop('disabled', true);
+                        axios.get(currentCharacterFormUrl)
+                            .then((res) => {
+                                $(e.currentTarget).find('.form-container').html(res.data);
+                                modalCharacterFooterButtons.prop('disabled', false);
+                            })
+                            .catch((err) => {
+                                console.error(err);
+                            });
+                    })
+                    .on('hidden.bs.modal', (e) => {
+                        modalCharacterFooterButtons.prop('disabled', true);
+                        $(e.currentTarget).find('.form-container').html(hourglassIcon);
+                    })
+            })
+
+        </script>
+        <% include ../footer %>
