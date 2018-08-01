@@ -67,7 +67,7 @@ $(function() {
     monsterImg = $("#monsterSprite").get(0);
 
     $("#mapCanvas").click(function(event) {
-        console.log( "click called on" + util_calculateTrueX(event.pageX) + ", " + util_calculateTrueY(event.pageY));
+        console.log( "click called on (global)" + event.pageX + ", " + event.pageY);
         ctx.drawImage(monsterImg, util_calculateTrueX(event.pageX),util_calculateTrueY(event.pageY), 20, 20);
       });
 });
@@ -93,11 +93,11 @@ function renderOtherUnitLocation(){
 
 
 function util_calculateTrueX(valX) {
-    return valX - $("#mapCanvas").offset().left;
+    return valX - $("#mapCanvas").offset().left - 10;
 }
 
 function util_calculateTrueY(valY){
-    return valY - $("#mapCanvas").offset().top;
+    return valY - $("#mapCanvas").offset().top - 10;
 }
 
 function doMouseDown() {
