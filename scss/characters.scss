@@ -84,7 +84,7 @@ body.modal-open {
     background: $character-border-color;
     color: #fff;
     height: auto;
-    padding-left: 60px;
+    padding-left: 0px;
     line-height: 20px;
 
     a {
@@ -377,4 +377,16 @@ canvas#mapCanvas {
   width: inherit;
   height: inherit;
   border:2px solid #000000;
+}
+
+
+.move-btn {
+  position: absolute;
+  top: 0;
+  right: 38px;
+  padding: 10px 5px;
+  cursor: pointer;
+  font-size: 12px;
+  background: #806d00;
+  z-index: 100;
 }

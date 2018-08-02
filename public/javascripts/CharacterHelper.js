@@ -18,7 +18,7 @@ const CharacterHelper = {
 
   generateCharacterHTML: (character, edit=false) => {
     let output = `<div class="character" data-fs-id="${character.id}">
-      <div class="edit-btn" data-fs-id="${character.id}">Edit</div>`;
+      <div class="edit-btn" data-fs-id="${character.id}">Edit</div>  <div class="move-btn" data-fs-id="${character.id}">Move</div>`;
     // Generate
     if (character.picture) {
         output += characterTemplate.avatar.replace('%%IMAGE%%', character.picture);
@@ -56,14 +56,6 @@ const CharacterHelper = {
         .replace('%%CURRENT%%', character.HP)
         .replace('%%MAX%%', character.MaxHP)
         .replace('%%PERCENTAGE%%', hpPercentage);
-
-    // // Generate Mana
-    // const manaPercentage = ((character.Mana / character.MaxMana) * 100).toFixed(2);
-    // output += characterTemplate.dynamicBar
-    //     .replace('%%TYPE%%', 'mana')
-    //     .replace('%%CURRENT%%', character.Mana)
-    //     .replace('%%MAX%%', character.MaxMana)
-    //     .replace('%%PERCENTAGE%%', manaPercentage);
 
     // Generate stats
     output += `<div class="char-stats">`;

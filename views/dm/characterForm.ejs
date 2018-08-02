@@ -27,6 +27,9 @@
           case 'stats': %>
             <%- include('../character/form/stats', { field, data, character }); %>
             <% break;
+            case 'location': %>
+            <%- include('../character/form/location', { field, data, defaultValue }); %>
+            <% break;
       } %>
     </div>
   <% }); %>

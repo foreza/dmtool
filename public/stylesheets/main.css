@@ -1798,7 +1798,7 @@ body.modal-open {
     background: #941751;
     color: #fff;
     height: auto;
-    padding-left: 60px;
+    padding-left: 0px;
     line-height: 20px; }
     .character .char-name a {
       color: #fff;
@@ -1998,5 +1998,15 @@ canvas#mapCanvas {
   width: inherit;
   height: inherit;
   border: 2px solid #000000; }
+
+.move-btn {
+  position: absolute;
+  top: 0;
+  right: 38px;
+  padding: 10px 5px;
+  cursor: pointer;
+  font-size: 12px;
+  background: #806d00;
+  z-index: 100; }
 
 /*# sourceMappingURL=main.css.map */
