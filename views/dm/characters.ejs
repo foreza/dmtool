@@ -64,7 +64,7 @@
                 container.text('');
                 characters.forEach((character) => {
                     container.append(CharacterHelper.generateCharacterHTML(character));
-                    util_renderUnitOnMap(character);
+                    util_createImageRenderDom(character.id, character.Picture) // Adds images to the dom hidden so we can use them later
                 });
             }
 

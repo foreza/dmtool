@@ -69,34 +69,69 @@ $(function () {
 
     $("#mapCanvas").click(function (event) {
         console.log("click called on (global)" + event.pageX + ", " + event.pageY);
-        // ctx.drawImage(monsterImg, util_calculateTrueX(event.pageX), util_calculateTrueY(event.pageY), 20, 20);
+
+        for (var i = 0; i < characters.length; ++i) {
+            if (gameBoardState.currentlySelected === characters[i].id){
+                console.log('found id match');
+                characters[i].x = util_calculateTrueX(event.pageX);
+                characters[i].y = util_calculateTrueY(event.pageY);
+
+            }
+        }
+
     });
 
 
     charContainer.on('click', '.move-btn', (e) => {
-        alert("Moving this character: " + $(e.currentTarget).attr('data-fs-id'));
+        // alert("Moving this character: " + $(e.currentTarget).attr('data-fs-id'));
+        console.log("$(e.currentTarget)", $(e.currentTarget));
+        gameBoardState.currentlySelected = $(e.currentTarget).attr('data-fs-id');
+        // TODO: Highlight the character who is currently being selected to move
     })
 });
 
 
 // Terrible Gameloop, may be costly. Can switch to leverage sockets or something later on
 
-setInterval(function () { counter() }, 1000);
+setInterval(function () { counter() }, 200);
 function counter() {
-    console.log("rendering");
+    // util_printBoardState();     
     renderPlayerLocation();
     renderOtherUnitLocation();
 }
 
+
+// TODO: implement. Call to update player location
 function renderPlayerLocation() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    for (var i = 0; i < characters.length; ++i) {
+        ctx.drawImage($("#"+characters[i].id+"sprite").get(0), characters[i].x, characters[i].y, 40, 40);
+            
+        
+    }
 
 }
 
-
+// TODO: implement. Call to update other unit location
 function renderOtherUnitLocation() {
-
 }
 
+
+function util_createImageRenderDom(pid, src){
+
+    console.log("DOM insertion for: ", src);
+
+    if (src != "" && src != null){
+        $("#map-container").append('<img id="' + pid + "sprite" +
+        '" style="visibility:hidden" src="' + src +
+        '" alt="Player" width="20" height="20">');
+    } else {
+        $("#map-container").append('<img id="' + pid + "sprite" + '" style="visibility:hidden" src="https://cdn.wikimg.net/en/strategywiki/images/1/1d/Male_Supernovice_%28Ragnarok_Online%29.png" alt="Player" width="20" height="20">')
+    }
+
+   
+}
 
 function util_calculateTrueX(valX) {
     return valX - $("#mapCanvas").offset().left - 10;
@@ -106,15 +141,21 @@ function util_calculateTrueY(valY) {
     return valY - $("#mapCanvas").offset().top - 10;
 }
 
-// This function will take a character, NPC, or monster and make an attempt to render
-function util_renderUnitOnMap(obj) {
-    console.log("Rendering id: ", obj.id);
+// // This function will take a character, NPC, or monster and make an attempt to render
+// function util_renderUnitOnMap(obj) {
+//     console.log("Rendering id: ", obj.id);
+//     // ctx.drawImage(playerImg, obj.x, obj.y, 40, 40);
 
-    if (gameBoardState.combatState.playerUnitCombatLoc[obj.id] != null){
-        console.log("Location exists, rendering: " + obj.Name)
-        ctx.drawImage(playerImg, gameBoardState.combatState.playerUnitCombatLoc[obj.id].x, gameBoardState.combatState.playerUnitCombatLoc[obj.id].y, 20, 20);
-    }
+//     // TODO: use the player's image if they have one. otherwise, use the default one here
     
+// }
+
+function util_printBoardState() {
+    console.log("Board State: " + 
+    "Selected:" + gameBoardState.currentlySelected
+    
+    
+    );
 }
 
 function doMouseDown() {
