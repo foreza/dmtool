@@ -372,11 +372,31 @@ body.modal-open {
   width: 400px;
 }
 
-
 canvas#mapCanvas {
   width: inherit;
   height: inherit;
   border:2px solid #000000;
+}
+
+// Our combat container will always hang to the right
+#combat-container {
+  display: none;
+  position: absolute;
+  right: 1%;
+  top: 25%;
+  background-image: url("https://pbs.twimg.com/profile_images/994151873128140800/WqhS2ugC_400x400.jpg");
+  background-repeat: no-repeat; 
+  background-size: 100% 100%;
+  background-color: #cccccc;
+  height: 400px;
+  width: 400px;
+}
+
+
+canvas#combatCanvas {
+  width: inherit;
+  height: inherit;
+  border:4px solid #000000;
 }
 
 
@@ -388,5 +408,17 @@ canvas#mapCanvas {
   cursor: pointer;
   font-size: 12px;
   background: #806d00;
+  z-index: 100;
+}
+
+.toggle-btn {
+  display: block;
+  position: absolute;
+  right: 1%;
+  top: 20%;
+  padding: 10px 5px;
+  cursor: pointer;
+  font-size: 14px;
+  background: #13c021;
   z-index: 100;
 }

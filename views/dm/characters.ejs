@@ -1,17 +1,30 @@
 <% include ../header %>
     <section id="characters-container">
-
+  
     </section>
 
     <!-- TODO: Make this it's own .ejs file so it becomes a reusable component-->
 
-    <section id="map-container">
+    <div>
+        <div id="toggle-mode" class="toggle-btn">TOGGLE</div>
+        <section id="map-container">
             <canvas id="mapCanvas">
                 Your browser does not support the HTML5 canvas tag.
-                </canvas>
-                <img id="playerSprite" style="visibility:hidden" src="https://cdn.wikimg.net/en/strategywiki/images/1/1d/Male_Supernovice_%28Ragnarok_Online%29.png" alt="Player" width="20" height="20">
-                <img id="monsterSprite" style="visibility:hidden" src="https://vignette.wikia.nocookie.net/ragnarok8812/images/f/fe/RO_SantaPoring%28SD%29.png/revision/latest/scale-to-width-down/160?cb=20170316070121.jpg" alt="Poring" width="20" height="20">
-    </section>
+            </canvas>
+        </section>
+
+        <section id="combat-container">
+            <canvas id="combatCanvas">
+                Your browser does not support the HTML5 canvas tag.
+            </canvas>
+        </section>
+
+        <div id="sprite-container">
+            </div>
+
+    </div>
+
+
 
     <button id="add-character-btn" class="btn btn-success" title="Add Character">
         +
