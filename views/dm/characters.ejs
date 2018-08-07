@@ -133,7 +133,6 @@
                         .then(() => {
                             const currentTarget = $(e.currentTarget);
                             const data = currentTarget.serializeJSON();
-                            console.log(data);
                             const characterId = currentTarget.find('#character-id-field').val();
 
                             const ajaxCall = () => {

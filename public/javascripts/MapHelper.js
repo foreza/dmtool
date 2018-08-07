@@ -72,10 +72,10 @@ $(function () {
 
         for (var i = 0; i < characters.length; ++i) {
             if (gameBoardState.currentlySelected === characters[i].id){
-                console.log('found id match');
+                console.log('found id match, prior x: ' + characters[i].x);
                 characters[i].x = util_calculateTrueX(event.pageX);
                 characters[i].y = util_calculateTrueY(event.pageY);
-
+                renderAllPlayerLocation();   
             }
         }
 
@@ -86,32 +86,32 @@ $(function () {
         // alert("Moving this character: " + $(e.currentTarget).attr('data-fs-id'));
         console.log("$(e.currentTarget)", $(e.currentTarget));
         gameBoardState.currentlySelected = $(e.currentTarget).attr('data-fs-id');
-        // TODO: Highlight the character who is currently being selected to move
+        // TODO: Highlight the character who is currently being selected to move        
     })
+
+
+    // Render on a timeout (temporary fix)
+    setTimeout(function(){renderAllPlayerLocation()}, 1000);
 });
 
 
-// Terrible Gameloop, may be costly. Can switch to leverage sockets or something later on
+// Render all player locations with the corresponding sprite
+// Since we have to re-draw the canvas in order to 'erase', we will need to re-draw all game objects when a unit location is updated
 
-setInterval(function () { counter() }, 200);
-function counter() {
-    // util_printBoardState();     
-    renderPlayerLocation();
-    renderOtherUnitLocation();
-}
-
-
-// TODO: implement. Call to update player location
-function renderPlayerLocation() {
+function renderAllPlayerLocation() {
+    console.log("renderAllPlayerLocation!");
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    for (var i = 0; i < characters.length; ++i) {
-        ctx.drawImage($("#"+characters[i].id+"sprite").get(0), characters[i].x, characters[i].y, 40, 40);
-            
-        
+    
+    if (characters != null && characters.length > 0) {
+        for (var i = 0; i < characters.length; ++i) {
+            console.log("Rendering!");
+            ctx.drawImage($("#"+characters[i].id+"sprite").get(0), characters[i].x, characters[i].y, 40, 40);
+        }
+    } else {
+        console.log("Characters is null or empty");
     }
-
 }
+
 
 // TODO: implement. Call to update other unit location
 function renderOtherUnitLocation() {
@@ -141,14 +141,7 @@ function util_calculateTrueY(valY) {
     return valY - $("#mapCanvas").offset().top - 10;
 }
 
-// // This function will take a character, NPC, or monster and make an attempt to render
-// function util_renderUnitOnMap(obj) {
-//     console.log("Rendering id: ", obj.id);
-//     // ctx.drawImage(playerImg, obj.x, obj.y, 40, 40);
 
-//     // TODO: use the player's image if they have one. otherwise, use the default one here
-    
-// }
 
 function util_printBoardState() {
     console.log("Board State: " + 
