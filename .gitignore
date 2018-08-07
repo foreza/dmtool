@@ -1,4 +1,5 @@
 node_modules/
 ace-builds-*
 dm-tool-*
+.DS_Store
 firestore-cred.json
