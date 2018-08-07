@@ -18,25 +18,21 @@ var gameBoardState = {
     "currentlySelected": null,
     "lastMoved": null,
     "combatState": {
-        "playerUnitCombatLoc": [
-            {
-                "21pRlwom7G8dRhTMVfL5": {
-                    "charIndex": 0,
-                    "x": 15,
-                    "y": 10
-                }
+    "playerUnitCombatLoc" : [
+        { "id": "5yg6XbiJE48ibThDZK0K", x: 0, y: 0 },
+        { "id": "FOeOG7LxehO1PeYiyZOv", x: 5, y: 5 },
+        { "id": "QtFAW9NRWUNaY6UBTBid", x: 3, y: 7 },
+        { "id": "prdTXfpUxE6FuYuiTHi7", x: 2, y: 4 }],
+    "otherUnitsCombatLoc": [
+        {
+            "murloc": {
+                "x": 15,
+                "y": 10,
+                "size": "tbd"
             }
-        ],
-        "otherUnitsCombatLoc": [
-            {
-                "murloc": {
-                    "x": 15,
-                    "y": 10,
-                    "size": "tbd"
-                }
-            }
-        ]
-    }
+        }
+    ]
+}
 };
 
 
@@ -70,9 +66,29 @@ $(function () {
         for (var i = 0; i < characters.length; ++i) {
             if (gameBoardState.currentlySelected === characters[i].id) {
                 console.log('found id match, prior x: ' + characters[i].x);
-                characters[i].x = util_calculateTrueX(event.pageX);
-                characters[i].y = util_calculateTrueY(event.pageY);
+                characters[i].x = util_calculateTrueX(event.pageX, "mapCanvas");
+                characters[i].y = util_calculateTrueY(event.pageY, "mapCanvas");
                 renderAllPlayerLocation();
+            }
+        }
+
+    });
+
+    // Bind on click events to map Canvas
+    $("#combatCanvas").click(function (event) {
+        console.log("combat click called on (global)" + event.pageX + ", " + event.pageY);
+
+        for (var i = 0; i < gameBoardState.combatState.playerUnitCombatLoc.length; ++i) {
+            if (gameBoardState.currentlySelected === gameBoardState.combatState.playerUnitCombatLoc[i].id) {
+                console.log('combat found id match, prior x/y: ' +
+                    gameBoardState.combatState.playerUnitCombatLoc[i].x + ", " +
+                    gameBoardState.combatState.playerUnitCombatLoc[i].y);
+                gameBoardState.combatState.playerUnitCombatLoc[i].x = util_calculateDisplayXForCombatCanvas(util_calculateTrueX(event.pageX, "combatCanvas"), 40);
+                gameBoardState.combatState.playerUnitCombatLoc[i].y = util_calculateDisplayYForCombatCanvas(util_calculateTrueY(event.pageY, "combatCanvas"), 40);
+                console.log('combat found id match, new x/y: ' +
+                    gameBoardState.combatState.playerUnitCombatLoc[i].x + ", " +
+                    gameBoardState.combatState.playerUnitCombatLoc[i].y);
+                renderAllPlayerCombatLocation();
             }
         }
 
@@ -110,7 +126,8 @@ function enterCombatState() {
     console.log("Entering combat state");
     $('#map-container').css("display", "none");
     $('#combat-container').css("display", "block");
-    renderAllPlayerCombatLocation
+    // populatePlayerUnitCombatLoc();
+    renderAllPlayerCombatLocation();
     util_drawGridOnState(cCtx, 400, 400, 40);
 
 }
@@ -124,9 +141,42 @@ function enterExploreState() {
 }
 
 
+function populatePlayerUnitCombatLoc() {
 
-function renderAllPlayerCombatLocation(){
+    // Load each character into the grid  by their ID if they do not exist already
+    for (var i = 0; i < characters.length; ++i) {
+
+        var cPos = {
+            "id": characters[i].id,
+            "x": 0,
+            "y": 0
+        }
+        gameBoardState.combatState.playerUnitCombatLoc.push(cPos);
+    }
+
+    console.log(gameBoardState);
+
+}
+
+
+function renderAllPlayerCombatLocation() {
     console.log("renderAllPlayerCombatLocation!");
+
+    cCtx.clearRect(0, 0, combatCanvas.width, combatCanvas.height);
+    util_drawGridOnState(cCtx, 400, 400, 40);
+
+
+    if (gameBoardState.combatState != null) {
+        for (var i = 0; i < gameBoardState.combatState.playerUnitCombatLoc.length; ++i) {
+            console.log("Rendering Combat loc!");
+            cCtx.drawImage($("#" + gameBoardState.combatState.playerUnitCombatLoc[i].id + "sprite").get(0),
+            util_adjustAndCenterDisplayForCombat(gameBoardState.combatState.playerUnitCombatLoc[i].x, 40), 
+            util_adjustAndCenterDisplayForCombat(gameBoardState.combatState.playerUnitCombatLoc[i].y, 40), 20, 20);
+
+        }
+    } else {
+        console.log("Characters is null or empty");
+    }
 
 
 }
@@ -175,22 +225,32 @@ function util_createImageRenderDom(pid, src) {
 
 }
 
-function util_calculateTrueX(valX) {
-    return valX - $("#mapCanvas").offset().left - 10;
+function util_calculateTrueX(valX, cv) {
+    return valX - $("#" + cv).offset().left - 10;
 }
 
-function util_calculateTrueY(valY) {
-    return valY - $("#mapCanvas").offset().top - 10;
+function util_calculateTrueY(valY, cv) {
+    return valY - $("#" + cv).offset().top - 10;
 }
 
 
+function util_calculateDisplayXForCombatCanvas(valX, scale) {
+    console.log("valX/scale * scale:", Math.floor(valX / scale) * scale)
+    return Math.floor(valX / scale);
+}
+
+function util_calculateDisplayYForCombatCanvas(valY, scale) {
+    return Math.floor(valY / scale);}
+
+
+function util_adjustAndCenterDisplayForCombat(val, scale){
+    return (val*scale) + scale/4;
+}
 
 
 function util_printBoardState() {
     console.log("Board State: " +
         "Selected:" + gameBoardState.currentlySelected
-
-
     );
 }
 
@@ -206,25 +266,3 @@ function util_drawGridOnState(ctx, height, width, scale) {
     }
 
 }
-
-function doMouseDown() {
-    alert("clicked");
-}
-
-
-// Sample
-
-/*
-
-
-HP:"20"
-Level:"1"
-Mana:"10"
-MaxHP:"20"
-MaxMana:"10"
-Name:"John Doe"
-Race:"Elf"
-id:"21pRlwom7G8dRhTMVfL5"
-
-
-*/
