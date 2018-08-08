@@ -22,12 +22,12 @@ module.exports = {
       { name: 'Class', type: 'options', values: ['Barbarian', 'Bard', 'Cleric', 'Druid', 'Fighter', 'Monk', 'Paladin','Ranger','Rogue','Sorcerer','Warlock','Wizard']},
       { name: 'HP', type: 'number', default: 10 },
       { name: 'MaxHP', type: 'number', default: 10 },
-      { name: 'Spells', type: 'spells', values: [
+      { name: 'Spells', type: 'text', values: [
         { name: 'Cause Fear' },
         { name: 'Armor of Agathys' }
       ]}, 
       { name: 'Proficiencies', 
-        type: 'proficiencies',
+        type: 'text',
         skills: [
           { name: 'Animal Handling' },
           { name: 'Perception' }
