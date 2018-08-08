@@ -18,21 +18,17 @@ var gameBoardState = {
     "currentlySelected": null,
     "lastMoved": null,
     "combatState": {
-    "playerUnitCombatLoc" : [
-        { "id": "5yg6XbiJE48ibThDZK0K", x: 0, y: 0 },
-        { "id": "FOeOG7LxehO1PeYiyZOv", x: 5, y: 5 },
-        { "id": "QtFAW9NRWUNaY6UBTBid", x: 3, y: 7 },
-        { "id": "prdTXfpUxE6FuYuiTHi7", x: 2, y: 4 }],
-    "otherUnitsCombatLoc": [
-        {
-            "murloc": {
-                "x": 15,
-                "y": 10,
-                "size": "tbd"
+        "playerUnitCombatLoc": [],
+        "otherUnitsCombatLoc": [
+            {
+                "murloc": {
+                    "x": 15,
+                    "y": 10,
+                    "size": "tbd"
+                }
             }
-        }
-    ]
-}
+        ]
+    }
 };
 
 
@@ -57,6 +53,9 @@ $(function () {
     monsterImg = $("#monsterSprite").get(0);
     charContainer = $('#characters-container');
     toggleSelect = $('#toggle-mode');
+
+
+
 
 
     // Bind on click events to map Canvas
@@ -117,12 +116,18 @@ $(function () {
 
 
 
-    // Render on a timeout (temporary fix)
-    setTimeout(function () { renderAllPlayerLocation() }, 2000);
+    // Render + init on a timeout (temporary fix)
+    setTimeout(function () {
+        drawMapView();
+    }, 1000);
+
+
+
 });
 
 
 function enterCombatState() {
+
     console.log("Entering combat state");
     $('#map-container').css("display", "none");
     $('#combat-container').css("display", "block");
@@ -133,87 +138,94 @@ function enterCombatState() {
 }
 
 function enterExploreState() {
+
     console.log("Entering explore state");
     $('#map-container').css("display", "block")
     $('#combat-container').css("display", "none")
-    // util_drawGridOnState(eCtx, 400, 400, 10);
+
+}
+
+// TODO: implement
+function resetGameBoardLocations(ctx) {
+
+    // On a new game, we want to set some defaults
+    // This will also be used to 'clear' or 'restart' a session
+    // If the ctx passed in is the explore context, we want to overwrite the player x / y with some default value
+    // If the ctx passed in is the combat ctx, we want to overwrite the gameBoardState player x/ y with some default
+    // Clicking this button at any time should trigger a warning modal
 
 }
 
 
-function populatePlayerUnitCombatLoc() {
+// TODO: implement
+function getPlayerUnitCombatLoc(isTest) {
 
-    // Load each character into the grid  by their ID if they do not exist already
-    for (var i = 0; i < characters.length; ++i) {
+    var gb;     // Get the gameboard
 
-        var cPos = {
-            "id": characters[i].id,
-            "x": 0,
-            "y": 0
+    // Test mode, load local values
+    if (isTest) {
+        for (var i = 0; i < characters.length; ++i) {
+
+            console.log('bing!');
+
+            var cPos = {
+                "id": characters[i].id,
+                "x": i * 2,
+                "y": i * 2
+            }
+            gameBoardState.combatState.playerUnitCombatLoc.push(cPos);
         }
-        gameBoardState.combatState.playerUnitCombatLoc.push(cPos);
-    }
 
+    } else {
+        // Load gameBoardState from firestore db
+        // Grab each character loc x and y and store initial values
+    }
     console.log(gameBoardState);
 
 }
 
 
 function renderAllPlayerCombatLocation() {
-    console.log("renderAllPlayerCombatLocation!");
 
     cCtx.clearRect(0, 0, combatCanvas.width, combatCanvas.height);
     util_drawGridOnState(cCtx, 400, 400, 40);
 
-
     if (gameBoardState.combatState != null) {
         for (var i = 0; i < gameBoardState.combatState.playerUnitCombatLoc.length; ++i) {
             console.log("Rendering Combat loc!");
-            // cCtx.drawImage($("#" + gameBoardState.combatState.playerUnitCombatLoc[i].id + "sprite").get(0),
-
-
-             
-            // 20, 20);
-
-
-            util_drawImageFromCharContainer(cCtx, gameBoardState.combatState.playerUnitCombatLoc[i].id , 
+            util_drawImageFromCharContainer(cCtx, gameBoardState.combatState.playerUnitCombatLoc[i].id,
                 util_adjustAndCenterDisplayForCombat(gameBoardState.combatState.playerUnitCombatLoc[i].x, 40),
-                util_adjustAndCenterDisplayForCombat(gameBoardState.combatState.playerUnitCombatLoc[i].y, 40), 20, 20 )
-
-
-            
-
+                util_adjustAndCenterDisplayForCombat(gameBoardState.combatState.playerUnitCombatLoc[i].y, 40), 20, 20)
         }
     } else {
         console.log("Characters is null or empty");
     }
 
-
 }
 
+// Function called to draw/re-draw the view as needed
+function drawMapView() {
 
+    getPlayerUnitCombatLoc(true);
+    renderAllPlayerLocation();
+    renderAllPlayerCombatLocation();
+
+}
 
 // Render all player locations with the corresponding sprite
 // Since we have to re-draw the exploreCanvas in order to 'erase', we will need to re-draw all game objects when a unit location is updated
 
 function renderAllPlayerLocation() {
-    console.log("renderAllPlayerLocation!");
-    eCtx.clearRect(0, 0, exploreCanvas.width, exploreCanvas.height);
-    // util_drawGridOnState(eCtx, 400, 400, 20);
 
+    eCtx.clearRect(0, 0, exploreCanvas.width, exploreCanvas.height);
 
     if (characters != null && characters.length > 0) {
         for (var i = 0; i < characters.length; ++i) {
-            console.log("Rendering!");
-            // eCtx.drawImage($("#" + characters[i].id + "sprite").get(0), characters[i].x, characters[i].y, 40, 40);
-
-            util_drawImageFromCharContainer(eCtx, characters[i].id , characters[i].x, characters[i].y, 40, 40 )
-
+            util_drawImageFromCharContainer(eCtx, characters[i].id, characters[i].x, characters[i].y, 40, 40)
         }
     } else {
         console.log("Characters is null or empty");
     }
-
 
 }
 
@@ -223,61 +235,66 @@ function renderOtherUnitLocation() {
 }
 
 
-// function util_createImageRenderDom(pid, src) {
+function util_drawImageFromCharContainer(ctx, id, locX, locY, dimX, dimY) {
 
-//     console.log("DOM insertion for: ", src);
+    if ($('.character[data-fs-id="' + id + '"]').children('img').get(0)){
+        ctx.drawImage($('.character[data-fs-id="' + id + '"]').children('img').get(0), locX, locY, dimX, dimY);
+    } else {
+        // alert ('img not present, using preset default');
 
-//     if (src != "" && src != null) {
-//         $("#sprite-container").append('<img id="' + pid + "sprite" +
-//             '" style="visibility:hidden" src="' + src +
-//             '" alt="Player" width="20" height="20">');
-//     } else {
-//         $("#sprite-container").append('<img id="' + pid + "sprite" + '" style="visibility:hidden" src="https://cdn.wikimg.net/en/strategywiki/images/1/1d/Male_Supernovice_%28Ragnarok_Online%29.png" alt="Player" width="20" height="20">')
-//     }
+        var img = new Image;
+        img.src = "https://cdn.wikimg.net/en/strategywiki/images/1/1d/Male_Supernovice_%28Ragnarok_Online%29.png";
 
-
-// }
-
-function util_drawImageFromCharContainer(ctx, id, locX, locY, dimX, dimY ){
-
-    ctx.drawImage($('.character[data-fs-id="' + id + '"]').children('img').get(0), locX,locY,dimX,dimY)
-
-// eCtx.drawImage($('.character[data-fs-id="5yg6XbiJE48ibThDZK0K"]').children('img').get(0), 100,100,20,20)
-
-
+        // var tmp = '<img class="avatar" src="https://cdn.wikimg.net/en/strategywiki/images/1/1d/Male_Supernovice_%28Ragnarok_Online%29.png">';
+        ctx.drawImage(img, locX, locY, dimX, dimY);
+    }
 
 }
+
 
 function util_calculateTrueX(valX, cv) {
+
     return valX - $("#" + cv).offset().left - 10;
+
 }
 
+
 function util_calculateTrueY(valY, cv) {
+
     return valY - $("#" + cv).offset().top - 10;
+
 }
 
 
 function util_calculateDisplayXForCombatCanvas(valX, scale) {
+
     console.log("valX/scale * scale:", Math.floor(valX / scale) * scale)
     return Math.floor(valX / scale);
+
 }
 
+
 function util_calculateDisplayYForCombatCanvas(valY, scale) {
-    return Math.floor(valY / scale);}
+
+    return Math.floor(valY / scale);
+
+}
 
 
-function util_adjustAndCenterDisplayForCombat(val, scale){
+function util_adjustAndCenterDisplayForCombat(val, scale) {
 
-    var value = ((val*scale) + scale/4) > 0 ? ((val*scale) + scale/4) : scale/4;
-
+    var value = ((val * scale) + scale / 4) > 0 ? ((val * scale) + scale / 4) : scale / 4;
     return value;
+
 }
 
 
 function util_printBoardState() {
+
     console.log("Board State: " +
         "Selected:" + gameBoardState.currentlySelected
     );
+
 }
 
 // This function assumes tile sizes are 25x25 (on the 400 by 400 scale), which will represent 5x5 on a 50x50 grid

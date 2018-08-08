@@ -73,6 +73,7 @@
                 characters.forEach((character) => {
                     container.append(CharacterHelper.generateCharacterHTML(character));
                 });
+                drawMapView();
             }
 
             function getCharacterFormUrl(roomKey, characterId) {
