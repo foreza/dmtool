@@ -1,10 +1,9 @@
 <% include ../header %>
     <section id="characters-container">
-  
+
     </section>
 
     <!-- TODO: Make this it's own .ejs file so it becomes a reusable component-->
-
     <div>
         <div id="toggle-mode" class="toggle-btn">TOGGLE</div>
         <section id="map-container">
@@ -18,10 +17,6 @@
                 Your browser does not support the HTML5 canvas tag.
             </canvas>
         </section>
-
-        <div id="sprite-container">
-            </div>
-
     </div>
 
 
@@ -77,7 +72,6 @@
                 container.text('');
                 characters.forEach((character) => {
                     container.append(CharacterHelper.generateCharacterHTML(character));
-                    util_createImageRenderDom(character.id, character.Picture) // Adds images to the dom hidden so we can use them later
                 });
             }
 

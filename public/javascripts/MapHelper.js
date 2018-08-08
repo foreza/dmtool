@@ -169,9 +169,19 @@ function renderAllPlayerCombatLocation() {
     if (gameBoardState.combatState != null) {
         for (var i = 0; i < gameBoardState.combatState.playerUnitCombatLoc.length; ++i) {
             console.log("Rendering Combat loc!");
-            cCtx.drawImage($("#" + gameBoardState.combatState.playerUnitCombatLoc[i].id + "sprite").get(0),
-            util_adjustAndCenterDisplayForCombat(gameBoardState.combatState.playerUnitCombatLoc[i].x, 40), 
-            util_adjustAndCenterDisplayForCombat(gameBoardState.combatState.playerUnitCombatLoc[i].y, 40), 20, 20);
+            // cCtx.drawImage($("#" + gameBoardState.combatState.playerUnitCombatLoc[i].id + "sprite").get(0),
+
+
+             
+            // 20, 20);
+
+
+            util_drawImageFromCharContainer(cCtx, gameBoardState.combatState.playerUnitCombatLoc[i].id , 
+                util_adjustAndCenterDisplayForCombat(gameBoardState.combatState.playerUnitCombatLoc[i].x, 40),
+                util_adjustAndCenterDisplayForCombat(gameBoardState.combatState.playerUnitCombatLoc[i].y, 40), 20, 20 )
+
+
+            
 
         }
     } else {
@@ -195,7 +205,10 @@ function renderAllPlayerLocation() {
     if (characters != null && characters.length > 0) {
         for (var i = 0; i < characters.length; ++i) {
             console.log("Rendering!");
-            eCtx.drawImage($("#" + characters[i].id + "sprite").get(0), characters[i].x, characters[i].y, 40, 40);
+            // eCtx.drawImage($("#" + characters[i].id + "sprite").get(0), characters[i].x, characters[i].y, 40, 40);
+
+            util_drawImageFromCharContainer(eCtx, characters[i].id , characters[i].x, characters[i].y, 40, 40 )
+
         }
     } else {
         console.log("Characters is null or empty");
@@ -210,17 +223,27 @@ function renderOtherUnitLocation() {
 }
 
 
-function util_createImageRenderDom(pid, src) {
+// function util_createImageRenderDom(pid, src) {
 
-    console.log("DOM insertion for: ", src);
+//     console.log("DOM insertion for: ", src);
 
-    if (src != "" && src != null) {
-        $("#sprite-container").append('<img id="' + pid + "sprite" +
-            '" style="visibility:hidden" src="' + src +
-            '" alt="Player" width="20" height="20">');
-    } else {
-        $("#sprite-container").append('<img id="' + pid + "sprite" + '" style="visibility:hidden" src="https://cdn.wikimg.net/en/strategywiki/images/1/1d/Male_Supernovice_%28Ragnarok_Online%29.png" alt="Player" width="20" height="20">')
-    }
+//     if (src != "" && src != null) {
+//         $("#sprite-container").append('<img id="' + pid + "sprite" +
+//             '" style="visibility:hidden" src="' + src +
+//             '" alt="Player" width="20" height="20">');
+//     } else {
+//         $("#sprite-container").append('<img id="' + pid + "sprite" + '" style="visibility:hidden" src="https://cdn.wikimg.net/en/strategywiki/images/1/1d/Male_Supernovice_%28Ragnarok_Online%29.png" alt="Player" width="20" height="20">')
+//     }
+
+
+// }
+
+function util_drawImageFromCharContainer(ctx, id, locX, locY, dimX, dimY ){
+
+    ctx.drawImage($('.character[data-fs-id="' + id + '"]').children('img').get(0), locX,locY,dimX,dimY)
+
+// eCtx.drawImage($('.character[data-fs-id="5yg6XbiJE48ibThDZK0K"]').children('img').get(0), 100,100,20,20)
+
 
 
 }
@@ -244,7 +267,10 @@ function util_calculateDisplayYForCombatCanvas(valY, scale) {
 
 
 function util_adjustAndCenterDisplayForCombat(val, scale){
-    return (val*scale) + scale/4;
+
+    var value = ((val*scale) + scale/4) > 0 ? ((val*scale) + scale/4) : scale/4;
+
+    return value;
 }
 
 
