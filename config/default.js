@@ -48,13 +48,8 @@ module.exports = {
           { name: 'Charisma', type: 'number', default: 4 },
         ]
       }, 
-      { name: 'location',
-        type: 'location',
-        values: [
-          { name: 'x', type: 'number', default: 0 },
-          { name: 'y', type: 'number', default: 0 },
-        ]
-      }
+      { name: 'x', type: 'number', default: 100.0},
+      { name: 'y', type: 'number', default: 150.0}
     ]
   }
 }

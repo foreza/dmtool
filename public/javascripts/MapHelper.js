@@ -13,6 +13,9 @@ var monsterImg;
 var charContainer;          // Bind to $('#characters-container');
 var toggleSelect;
 
+var placeholderImg = new Image;
+placeholderImg.src = "https://cdn.wikimg.net/en/strategywiki/images/1/1d/Male_Supernovice_%28Ragnarok_Online%29.png";
+
 var gameBoardState = {
     "inCombat": false,
     "currentlySelected": null,
@@ -67,6 +70,17 @@ $(function () {
                 console.log('found id match, prior x: ' + characters[i].x);
                 characters[i].x = util_calculateTrueX(event.pageX, "mapCanvas");
                 characters[i].y = util_calculateTrueY(event.pageY, "mapCanvas");
+
+                data = {
+                    "x": characters[i].x,
+                    "y":characters[i].y
+                };
+
+                const ajaxCall = () => {
+                    return axios.patch(`/room/${roomKey}/character/${characters[i].id}`, data)
+                }
+        
+                ajaxCall();
                 renderAllPlayerLocation();
             }
         }
@@ -240,13 +254,8 @@ function util_drawImageFromCharContainer(ctx, id, locX, locY, dimX, dimY) {
     if ($('.character[data-fs-id="' + id + '"]').children('img').get(0)){
         ctx.drawImage($('.character[data-fs-id="' + id + '"]').children('img').get(0), locX, locY, dimX, dimY);
     } else {
-        // alert ('img not present, using preset default');
-
-        var img = new Image;
-        img.src = "https://cdn.wikimg.net/en/strategywiki/images/1/1d/Male_Supernovice_%28Ragnarok_Online%29.png";
-
-        // var tmp = '<img class="avatar" src="https://cdn.wikimg.net/en/strategywiki/images/1/1d/Male_Supernovice_%28Ragnarok_Online%29.png">';
-        ctx.drawImage(img, locX, locY, dimX, dimY);
+        console.log ('img not present, using preset default');
+            ctx.drawImage(placeholderImg, locX, locY, dimX, dimY);
     }
 
 }
