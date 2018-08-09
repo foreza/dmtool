@@ -81,10 +81,10 @@ $(function () {
                 }
         
                 ajaxCall();
-                renderAllPlayerLocation();
             }
         }
 
+        renderAllPlayerLocation();
     });
 
     // Bind on click events to map Canvas

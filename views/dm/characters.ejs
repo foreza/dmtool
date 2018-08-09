@@ -73,7 +73,10 @@
                 characters.forEach((character) => {
                     container.append(CharacterHelper.generateCharacterHTML(character));
                 });
-                drawMapView();
+                setTimeout(function () {
+                    drawMapView();
+                }, 2000);
+
             }
 
             function getCharacterFormUrl(roomKey, characterId) {
@@ -152,6 +155,7 @@
                             ajaxCall()
                                 .then(() => {
                                     modalCharacterForm.modal('hide');
+                                    renderCharacters();
                                 })
                                 .catch(err => {
                                     console.error(err);
@@ -189,49 +193,4 @@
 
         </script>
         <% include ../footer %>
-
-
-
-
-
-  <!-- 
-      firestore.collection('rooms').doc('testroom123223').collection('characters').doc("V8EYczsIGzFNg8V4EEAE").get()
-  .then((charRef) => {
-    const character = Object.assign({}, charRef.data(), { id: charRef.id });
-    console.log(character);
-  })
-  .catch(function (error) {
-    console.log(error);
-  }); 
-
-
-  firestore.collection('rooms').doc('testroom123223').collection('characters').doc("V8EYczsIGzFNg8V4EEAE").get()
-  .then((charRef) => {
-    console.log(charRef.data());
-  })
-  .catch(function (error) {
-    console.log(error);
-  });
-
-  ///
-
-var setWithMerge = cityRef.set({
-    capital: true
-}, { merge: true });
-
-
-firestore.collection('rooms')
-.doc('testroom123223')
-.collection('characters').doc("V8EYczsIGzFNg8V4EEAE").set({
-    x: 50,
-    y: 50}, {merge: true})
-    .then(() => {
-    console.log("Did it work");
-  })
-  .catch(function (error) {
-    console.log(error);
-  });
-
--->
-
   
