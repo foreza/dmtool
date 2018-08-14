@@ -9,6 +9,7 @@ $(function() {
     map = $("#map");
 
 
+
     drawGrid();
 
 });
@@ -30,8 +31,15 @@ function drawGrid() {
                 map.append(util_generateUnitDom(i,j));
             }
         }
+
+        // Bind on click events
+        $(".mapUnit").click(function (event) {
+            console.log("Clicked on:", event.target.innerHTML);
+        });
     
 }
+
+
 
 
 // This utility function generates a dom element in HTML to be inserted into the parent dom
