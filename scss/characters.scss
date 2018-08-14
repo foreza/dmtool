@@ -349,3 +349,45 @@ body.modal-open {
     }
   }
 }
+
+
+
+#characters-container {
+  margin-left: -10%; 
+}
+
+
+ #map-container {
+  display: block;
+  position: absolute;
+  right: 1%;
+  top: 25%;
+  background-image: url("https://static.giantbomb.com/uploads/square_small/0/25/11297-Azeroth_New_World_Map.jpg");
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  background-color: #cccccc;
+  height: 400px;
+  width: 400px; 
+}
+
+#map {
+  position: relative;
+}
+
+
+  .mapUnit{
+    // background-color: #cccccc;
+    height: 10px;
+    width: 10px;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #000000;
+    margin: 0;
+    padding: 0;
+    position: absolute;
+  }
+
+  .mapUnit span {
+    display: none;
+  }
+ 
