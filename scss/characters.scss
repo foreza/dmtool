@@ -377,8 +377,8 @@ body.modal-open {
 
   .mapUnit{
     // background-color: #cccccc;
-    height: 10px;
-    width: 10px;
+    height: 40px;
+    width: 40px;
     border-style: solid;
     border-width: 1px;
     border-color: #000000;
@@ -389,5 +389,22 @@ body.modal-open {
 
   .mapUnit span {
     display: none;
+  }
+
+
+  .charUnit {
+      height: 40px;
+      width: 40px;
+      border-style: solid;
+      border-width: 1px;
+      border-color: #000000;
+      margin: 0;
+      padding: 0;
+      position: absolute;
+  }
+
+  .highlight-grid{
+  background-color: #cccccc;
+    opacity: 50%;
   }
  
