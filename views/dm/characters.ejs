@@ -57,6 +57,7 @@
             characters.forEach((character) => {
                 container.append(CharacterHelper.generateCharacterHTML(character));
             });
+            drawCharacters();
         }
 
         function getCharacterFormUrl(roomKey, characterId) {
